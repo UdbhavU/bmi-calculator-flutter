@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'constants.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'icons.dart';
+import 'reusable_card.dart';
 
-const double bottomBarHeight = 75;
-const reusableCardColor = Color(0xff1d1e33);
-const bottomBarColor = Color(0xffd8004c);
+enum Gender { male, female }
 
 class InputPage extends StatefulWidget {
   @override
@@ -10,6 +12,10 @@ class InputPage extends StatefulWidget {
 }
 
 class _InputPageState extends State<InputPage> {
+  Gender selectedGender;
+  int weight = 10, height = 120, age = 18;
+  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -17,20 +23,164 @@ class _InputPageState extends State<InputPage> {
           title: Text('BMI CALCULATOR'),
         ),
         body: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             Expanded(
                 child: Row(
               children: <Widget>[
-                Expanded(child: ReusableCard(reusableCardColor)),
-                Expanded(child: ReusableCard(reusableCardColor))
+                Expanded(
+                    child: ReusableCard(
+                        onPress: () {
+                          setState(() {
+                            selectedGender = Gender.male;
+                          });
+                        },
+                        colour: selectedGender == Gender.male
+                            ? activeColor
+                            : inactiveColor,
+                        cardChild: IconContents(
+                            icon: FontAwesomeIcons.mars, label: 'Male'))),
+                Expanded(
+                    child: ReusableCard(
+                        onPress: () {
+                          setState(() {
+                            selectedGender = Gender.female;
+                          });
+                        },
+                        colour: selectedGender == Gender.female
+                            ? activeColor
+                            : inactiveColor,
+                        cardChild: IconContents(
+                          icon: FontAwesomeIcons.venus,
+                          label: 'Female',
+                        )))
               ],
             )),
-            Expanded(child: ReusableCard(reusableCardColor)),
+            Expanded(
+                child: ReusableCard(
+                    colour: reusableCardColor,
+                    cardChild: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text('Height', style: labelTextStyle),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.baseline,
+                          textBaseline: TextBaseline.alphabetic,
+                          children: <Widget>[
+                            Text(
+                              height.toString(),
+                              style: kNumberTextStyle,
+                            ),
+                            Text('cm', style: labelTextStyle)
+                          ],
+                        ),
+                        SliderTheme(
+                          data: SliderTheme.of(context).copyWith(
+                              thumbColor: bottomBarColor,
+                              activeTrackColor: Colors.white,
+                              trackHeight: 5,
+                              inactiveTrackColor: Color(0xff8d8e98),
+                              overlayColor: bottomBarColor.withAlpha(24),
+                              thumbShape: RoundSliderThumbShape(
+                                  enabledThumbRadius: 10.0),
+                              overlayShape:
+                                  RoundSliderOverlayShape(overlayRadius: 30)),
+                          child: Slider(
+                              value: height.toDouble(),
+                              min: 120,
+                              max: 220,
+                              onChanged: (double newValue) {
+                                setState(() {
+                                  height = newValue.toInt();
+                                });
+                              }),
+                        )
+                      ],
+                    ))),
             Expanded(
                 child: Row(
               children: <Widget>[
-                Expanded(child: ReusableCard(reusableCardColor)),
-                Expanded(child: ReusableCard(reusableCardColor))
+                Expanded(
+                    child: ReusableCard(
+                        colour: reusableCardColor,
+                        cardChild: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Text('Weight', style: labelTextStyle),
+                            Text(weight.toString(), style: kNumberTextStyle),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                RoundButtonCustom(
+                                  color: Color(0xffd8004c),
+                                  child: FaIcon(
+                                    FontAwesomeIcons.minus,
+                                    color: Colors.white,
+                                  ),
+                                  onTap: () {
+                                    setState(() {
+                                      weight--;
+                                    });
+                                  },
+                                ),
+                                SizedBox(width: 20),
+                                RoundButtonCustom(
+                                  color: Color(0xffd8004c),
+                                  child: FaIcon(
+                                    FontAwesomeIcons.plus,
+                                    color: Colors.white,
+                                  ),
+                                  onTap: () {
+                                    setState(() {
+                                      weight--;
+                                    });
+                                  },
+                                )
+                              ],
+                            )
+                          ],
+                        ))),
+                Expanded(
+                    child: ReusableCard(
+                        colour: reusableCardColor,
+                        cardChild: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Text('Age', style: labelTextStyle),
+                            Text(age.toString(), style: kNumberTextStyle),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                RoundButtonCustom(
+                                  color: Color(0xffd8004c),
+                                  child: FaIcon(
+                                    FontAwesomeIcons.minus,
+                                    color: Colors.white,
+                                  ),
+                                  onTap: () {
+                                    setState(() {
+                                      age--;
+                                    });
+                                  },
+                                ),
+                                SizedBox(width: 20),
+                                RoundButtonCustom(
+                                  color: Color(0xffd8004c),
+                                  child: FaIcon(
+                                    FontAwesomeIcons.plus,
+                                    color: Colors.white,
+                                  ),
+                                  onTap: () {
+                                    setState(() {
+                                      age++;
+                                    });
+                                  },
+                                )
+                              ],
+                            )
+                          ],
+                        )))
               ],
             )),
             Container(
@@ -43,20 +193,23 @@ class _InputPageState extends State<InputPage> {
   }
 }
 
-class ReusableCard extends StatelessWidget {
-  // final double x, y;
-  ReusableCard(@required this.colour);
-  final Color colour;
+class RoundButtonCustom extends StatelessWidget {
+  final Color color;
+  final Widget child;
+  final Function onTap;
+
+  RoundButtonCustom({this.color, this.onTap, this.child});
   @override
   Widget build(BuildContext context) {
-    return Container(
-      //height: x,
-      //width: y,
-      margin: EdgeInsets.all(15),
-      decoration: BoxDecoration(
-        color: colour,
-        borderRadius: BorderRadius.circular(15),
+    return RawMaterialButton(
+      onPressed: onTap,
+      child: child,
+      constraints: BoxConstraints.tightFor(
+        width: 56.0,
+        height: 56.0,
       ),
+      fillColor: color,
+      shape: CircleBorder(),
     );
   }
 }
