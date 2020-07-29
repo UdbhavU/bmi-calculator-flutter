@@ -3,6 +3,7 @@ import 'constants.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'icons.dart';
 import 'reusable_card.dart';
+import 'result_page.dart';
 
 enum Gender { male, female }
 
@@ -14,7 +15,6 @@ class InputPage extends StatefulWidget {
 class _InputPageState extends State<InputPage> {
   Gender selectedGender;
   int weight = 10, height = 120, age = 18;
-  
 
   @override
   Widget build(BuildContext context) {
@@ -133,7 +133,7 @@ class _InputPageState extends State<InputPage> {
                                   ),
                                   onTap: () {
                                     setState(() {
-                                      weight--;
+                                      weight++;
                                     });
                                   },
                                 )
@@ -184,6 +184,22 @@ class _InputPageState extends State<InputPage> {
               ],
             )),
             Container(
+                child: GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ResultPage(
+                                    weight: weight, height: height)));
+                      });
+                    },
+                    child: Center(
+                        child: Text(
+                      'CALCULATE',
+                      style:
+                          TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+                    ))),
                 color: bottomBarColor,
                 width: double.infinity,
                 margin: EdgeInsets.only(top: 10),
